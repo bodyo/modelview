@@ -1,7 +1,7 @@
 #include "treemodel.h"
 #include "treeitem.h"
 #include <QString>
-
+#include <QtGui>
 enum ColumnType
 {
     Name,
@@ -13,7 +13,7 @@ TreePictureModel::TreePictureModel(const QString &data, QObject *parent)
 {
     QList<QVariant> rootData{"Name" ,"Count of Points"};
     rootItem = new TreeItem(rootData);
-    setupModelData(QStringList{"first", "sec", "third", "five"}, rootItem);
+    setupModelData(QList<double>{1.2, 4, 5.6, 3.1}, rootItem);
 }
 
 TreePictureModel::~TreePictureModel()
@@ -26,18 +26,32 @@ QVariant TreePictureModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (role != Qt::DisplayRole)
-        return QVariant();
 
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
+    {
+        TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+        return item->data(index.column());
+    }
+    else
+        return QVariant();
+}
+
+bool TreePictureModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!index.isValid())
+        return false;
+    if (role != Qt::EditRole)
+        return false;
     TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
-    return item->data(index.column());
+    item->setData(index.column(), value);
+    return true;
 }
 
 Qt::ItemFlags TreePictureModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return 0;
-    return QAbstractItemModel::flags(index);
+    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
 }
 
 QVariant TreePictureModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -101,15 +115,15 @@ int TreePictureModel::columnCount(const QModelIndex &parent) const
         return rootItem->columnCount();
 }
 
-void TreePictureModel::setupModelData(const QStringList &lines, TreeItem *parent)
+void TreePictureModel::setupModelData(const QList<double> &lines, TreeItem *parent)
 {
-    for (const QString &data: lines)
+    for (const double &data: lines)
         parent->appendChild(new TreeItem({data, "2342"}, parent));
     TreeItem *child = parent->child(0);
-    for (const QString &data: lines)
-        child->appendChild(new TreeItem({data+"d", "sdfgfd"}, child));
+    for (const double &data: lines)
+        child->appendChild(new TreeItem({data+4, "sdfgfd"}, child));
     child = parent->child(1);
-    for (const QString &data: lines)
-        child->appendChild(new TreeItem({data+"f", "++++++"}, child));
+    for (const double &data: lines)
+        child->appendChild(new TreeItem({data+1, "++++++"}, child));
 }
 

@@ -31,6 +31,11 @@ QVariant TreeItem::data(int column) const
     return _itemData.value(column);
 }
 
+void TreeItem::setData(int column, const QVariant &data)
+{
+    _itemData[column] = data;
+}
+
 int TreeItem::row() const
 {
     if (_parent)

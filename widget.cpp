@@ -4,7 +4,7 @@
 Widget::Widget(QWidget *parent)
     : QWidget(parent), model("")
 {
-    QHBoxLayout *layout = new QHBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout();
     proxy.setSourceModel(&model);
     proxy.setFilterWildcard("*");
 //    proxy.
@@ -15,10 +15,10 @@ Widget::Widget(QWidget *parent)
     view.setItemDelegate(new Delegate(&view));
     setLayout(layout);
 
-    connect(&sort, &QTextEdit::textChanged, this, &Widget::patternChanged);
+    connect(&sort, &QLineEdit::textChanged, this, &Widget::patternChanged);
 }
 
 void Widget::patternChanged()
 {
-    proxy.setFilterWildcard(sort.toPlainText()+'*');
+    proxy.setFilterWildcard(sort.text()+'*');
 }

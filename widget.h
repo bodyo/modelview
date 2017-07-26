@@ -6,6 +6,7 @@
 #include "treeitem.h"
 #include <QTreeView>
 #include <QTextEdit>
+#include <QLineEdit>
 #include <QHBoxLayout>
 #include <QSortFilterProxyModel>
 
@@ -13,7 +14,7 @@ class Widget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Widget(QWidget *parent = nullptr);
+    explicit Widget(QWidget *parent = 0);
 
 signals:
 
@@ -23,7 +24,7 @@ public slots:
 private:
     TreePictureModel model;
     QSortFilterProxyModel proxy;
-    QTextEdit sort;
+    QLineEdit sort;
     QTreeView view;
 };
 
